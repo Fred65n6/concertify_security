@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    @variants responsive {
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    }
+}
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
+}
+
+.active-breadcrumb {
+    /* Add your custom styles for the active item here */
+    /* color: #6d34c9;
+    font-weight: 500;
+    pointer-events: none;
+    opacity: 1; */
+    text-decoration: underline;
+    /* Add any other styles you want */
+}
+
+/* .active-breadcrumb:hover {
+    text-decoration: none;
+  
+} */
+
+.dark-active-breadcrumb {
+    /* Add your custom styles for the active item here */
+    color: rgb(154, 38, 61);
+    font-weight: 500;
+    pointer-events: none;
+    opacity: 1;
+    /* Add any other styles you want */
+}
+
+
+.brand_purple {
+    color: #5311bf;
+}
+
+.brand_lightpurple {
+    color: #8e0bf5;
+}
+
+.brand-gray {
+    color: #979c9e;
+}
+
+.brand_purple_breadcrumb {
+    color: #5311bf;
+    opacity: 100;
+    pointer-events: none;
+}
+
+.brand-light-gray {
+    color: #e7e7e7;
+}
+
+.brand-lightest-gray {
+    color: #f0f0f0;
+}
+
+.brand_gradient {
+    background: linear-gradient(
+        90deg,
+        rgb(142, 11, 245) 0%,
+        rgba(83, 17, 191, 1) 81%,
+        rgba(65, 32, 136, 1) 100%
+    );
+}
+
+.custom-file-button {
+    background-color: #efefef;
+    color: #121212;
+    width: fit-content;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 100px;
+    cursor: pointer;
+    text-align: center;
+}
