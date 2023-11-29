@@ -19,6 +19,14 @@ export const sendEmail = async ({email, emailType, userId}: any) => {
                 Something: "this item",
                 forgotPasswordTokenExpiry: Date.now() + 3600000,
             });
+        } else if (emailType === "VERIFYARTIST") {
+            const tokenExpiryInMinutes = 30;
+            const tokenExpiryMilliseconds = tokenExpiryInMinutes * 60 * 1000;
+        
+            await User.findByIdAndUpdate(userId, {
+                verifyToken: hashedToken,
+                verifyTokenExpiry: Date.now() + tokenExpiryMilliseconds,
+            });
         }
 
         const transport = nodemailer.createTransport({
@@ -39,19 +47,27 @@ export const sendEmail = async ({email, emailType, userId}: any) => {
             subject:
                 emailType === "VERIFY"
                     ? "Verify your email"
+                    : emailType === "VERIFYARTIST"
+                    ? "Verify your artist account"
                     : "Reset your password",
             html: `<p>Click <a href="${
                 emailType === "VERIFY"
                     ? `${process.env.DOMAIN}/verifyemail?token=${hashedToken}`
+                    : emailType === "VERIFYARTIST"
+                    ? `${process.env.DOMAIN}/verify-artist?token=${hashedToken}`
                     : `${process.env.DOMAIN}/resetpassword?token=${resetToken}`
             }">here</a> to ${
                 emailType === "VERIFY"
                     ? "verify your email"
+                    : emailType === "VERIFYARTIST"
+                    ? "verify your artist account"
                     : "reset your password"
             }
             or copy and paste the link below in your browser. <br> ${
                 emailType === "VERIFY"
                     ? `${process.env.DOMAIN}/verifyemail?token=${hashedToken}`
+                    : emailType === "VERIFYARTIST"
+                    ? `${process.env.DOMAIN}/verify-artist?token=${hashedToken}`
                     : `${process.env.DOMAIN}/resetpassword?token=${resetToken}`
             }
             </p>`,

@@ -1,94 +1,173 @@
 "use client";
-import React, {useState, useEffect} from "react";
-import {request} from "http";
 
+import axios from "axios";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import {request} from "http";
+import LoginPage from "../login/page";
 
 interface Genre {
     _id: string;
     genre_name: string;
 }
 
-const UploadForm: React.FC = () => {
-    const [loading, setLoading] = useState(false);
+const VerifyArtistPage: React.FC = () => {
+  const [token, setToken] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [error, setError] = useState(false);
 
-    const [file, setFile] = useState<File | null>(null);
-    const [artistName, setArtistName] = useState("");
-    const [artistFullName, setArtistFullName] = useState("");
-    const [artistNation, setArtistNation] = useState("");
-    const [artistDescription, setArtistDescription] = useState("");
-    const [artistDob, setArtistDob] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const [genres, setGenres] = useState<Genre[]>([]);
-    const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
-    const [artistGenreId, setArtistGenreId] = useState("");
-    const [artistGenreName, setArtistGenreName] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [artistName, setArtistName] = useState("");
+  const [artistEmail, setArtistEmail] = useState("")
+  const [artistFullName, setArtistFullName] = useState("");
+  const [artistNation, setArtistNation] = useState("");
+  const [artistDescription, setArtistDescription] = useState("");
+  const [artistDob, setArtistDob] = useState("");
 
-    useEffect(() => {
-        const fetchGenres = async () => {
-            try {
-                const response = await fetch("/api/data/genreData");
-                if (response.ok) {
-                    const data = await response.json();
-                    setGenres(data.data as Genre[]);
-                }
-            } catch (error) {
-                console.error("Error fetching genres: ", error);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
+  const [artistGenreId, setArtistGenreId] = useState("");
+  const [artistGenreName, setArtistGenreName] = useState("");
+
+  useEffect(() => {
+    const urlToken = window.location.search.split("=")[1];
+    setToken(urlToken || "");
+    const fetchGenres = async () => {
+        try {
+            const response = await fetch("/api/data/genreData");
+            if (response.ok) {
+                const data = await response.json();
+                setGenres(data.data as Genre[]);
             }
-        };
-
-        fetchGenres();
-    }, []);
-
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!file) return request;
-        setLoading(true);
-
-        const data = new FormData();
-        data.set("file", file);
-        data.set("artist_name", artistName);
-        data.set("artist_full_name", artistFullName);
-        data.set("artist_description", artistDescription);
-        data.set("artist_dob", artistDob);
-        data.set("artist_nation", artistNation);
-        data.set("artist_genre_id", selectedGenre!._id);
-        data.set("artist_genre_name", selectedGenre!.genre_name);
-
-        const res = await fetch("/api/data/uploadArtist/", {
-            method: "POST",
-            body: data,
-        });
-
-        if (!res.ok) {
-            const errorText = await res.text();
-            console.error(errorText);
-        }
-
-        if (res.ok) {
-            setLoading(false);
-            showUploadMessage();
+        } catch (error) {
+            console.error("Error fetching genres: ", error);
         }
     };
 
-    const showUploadMessage = () => {
-        const artistUploadedMessage = document.getElementById(
-            "artistUploadedMessage"
-        );
-        const uploadArtistForm = document.getElementById("uploadArtistForm");
-        artistUploadedMessage?.classList.remove("hidden");
-        artistUploadedMessage?.classList.add("grid");
-        uploadArtistForm?.classList.add("hidden");
-        window.scrollTo(0, 0);
-    };
+    const verifyUserEmail = async () => {
+        try {
+          await axios.post("/api/users/verifyemail", { token });
+          setVerified(true);
+        } catch (error: any) {
+          setError(true);
+          console.log(error.response.data);
+        }
+      };
+  
+      if (token.length > 0) {
+        verifyUserEmail();
+      }
 
-    return (
-        <div className="flex flex-col w-full md:w-4/6 gap-6 mb-24">
-            <h1 className="font-bold text-4xl pb-4">Upload an artist</h1>
+    fetchGenres();
+  }, [token]);
+
+//   useEffect(() => {
+//     const verifyUserEmail = async () => {
+//       try {
+//         await axios.post("/api/users/verifyemail", { token });
+//         setVerified(true);
+//       } catch (error: any) {
+//         setError(true);
+//         console.log(error.response.data);
+//       }
+//     };
+
+//     if (token.length > 0) {
+//       verifyUserEmail();
+//     }
+//   }, [token]);
+
+
+const verifyUserEmail = async () => {
+    try {
+      await axios.post("/api/users/verifyemail", { token });
+      setVerified(true);
+    } catch (error: any) {
+      setError(true);
+      console.log(error.response.data);
+    }
+  };
+
+  const openLoginModule = () => {
+    const loginModule = document.getElementById("login_module");
+    loginModule?.classList.remove("hidden");
+    loginModule?.classList.add("grid");
+};
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!file) return request;
+    setLoading(true);
+
+    const data = new FormData();
+    data.set("file", file);
+    data.set("artist_name", artistName);
+    data.set("artist_email", artistEmail)
+    data.set("artist_full_name", artistFullName);
+    data.set("artist_description", artistDescription);
+    data.set("artist_dob", artistDob);
+    data.set("artist_nation", artistNation);
+    data.set("artist_genre_id", selectedGenre!._id);
+    data.set("artist_genre_name", selectedGenre!.genre_name);
+
+    const res = await fetch("/api/data/uploadArtist/", {
+        method: "POST",
+        body: data,
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error(errorText);
+    }
+
+    if (res.ok) {
+        setLoading(false);
+        showUploadMessage();
+    }
+};
+
+const showUploadMessage = () => {
+    const artistUploadedMessage = document.getElementById(
+        "artistUploadedMessage"
+    );
+    const uploadArtistForm = document.getElementById("uploadArtistForm");
+    artistUploadedMessage?.classList.remove("hidden");
+    artistUploadedMessage?.classList.add("grid");
+    uploadArtistForm?.classList.add("hidden");
+    window.scrollTo(0, 0);
+};
+
+  return (
+    <div className="grid">
+        <LoginPage/>
+      {verified && (
+        <div className="text-left grid gap-4">
+    
+          <div className="flex flex-col w-full md:w-4/6 gap-6 mb-24">
+          <h2 className="text-2xl brand_purple pt-4">
+            Your artist profile has been verified
+          </h2>
+            <h2 className="font-bold text-4xl pb-4">Upload your artist info</h2>
             <form
                 id="uploadArtistForm"
                 className="flex flex-col gap-8 w-full"
                 onSubmit={onSubmit}
                 >
+                <div className="form-group flex flex-col gap-2 text-gray-600 dark:text-gray-400">
+                    <label htmlFor="artist_name">insert your email to link the artist to your profile</label>
+                    <input
+                        className="bg-slate-100 border-0 px-8 py-4 rounded-full w-full"
+                        type="text"
+                        id="artist_email"
+                        name="artist_email"
+                        value={artistEmail}
+                        onChange={(e) => setArtistEmail(e.target.value)}
+                        placeholder="Artist email"
+                    />
+                </div>
+
                 <div className="form-group flex flex-col gap-2 text-gray-600 dark:text-gray-400">
                     <label htmlFor="artist_name">Artist name</label>
                     <input
@@ -215,22 +294,28 @@ const UploadForm: React.FC = () => {
             <div id="artistUploadedMessage" className="hidden">
                 <h2 className="text-2xl">Artist uploaded successfully 🎉</h2>
                 <div className="flex gap-4 mt-8">
-                    <a
-                        className="brand_gradient py-2 px-4 text-white rounded-full"
-                        href="/admin-upload-artist"
+                <button
+                        type="button"
+                        onClick={openLoginModule}
+                        className="rounded-full w-32 brand_gradient text-white hover:bg-purple-200 h-12"
                     >
-                        Upload another
-                    </a>
-                    <a
-                        className="rounded-full px-8 py-2 bg-purple-100 brand_purple flex items-center hover:bg-purple-200"
-                        href="/artists"
-                    >
-                        See all artists
-                    </a>
+                        Log in
+                    </button>
                 </div>
             </div>
         </div>
-    );
-};
+        </div>
 
-export default UploadForm;
+        
+
+      )}
+      {error && (
+        <div className="pt-4">
+          <h2 className="text-4xl text-red-500">There was an Error</h2>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default VerifyArtistPage;

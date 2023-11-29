@@ -5,8 +5,6 @@ import axios from "axios";
 import Link from "next/link";
 import jwt from "jsonwebtoken"; // Import jsonwebtoken
 import { CgClose } from "react-icons/cg";
-import ButtonPrimary from "../components/buttonPrimary/page";
-
 
 export default function LoginPage() {
     const [buttonDisabled, setButtonDisabled] = useState(false);

@@ -3,6 +3,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {v4 as uuidv4} from "uuid";
 import Artist from "@/models/artistModel";
 import AWS from "aws-sdk";
+import User from "@/models/userModel"
 
 // Load AWS credentials and configuration from environment variables
 AWS.config.update({
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
     const artistNationality = data.get("artist_nation");
     const artistDescription = data.get("artist_description");
     const artistDob = data.get("artist_dob");
+    const artistEmail = data.get("artist_email")
 
     const artistGenre = {
         genre_name: data.get("artist_genre_name"),
@@ -62,6 +64,23 @@ export async function POST(request: NextRequest) {
             artist_dob: artistDob,
         });
 
+        if (artistEmail) {
+            const user = await User.findOne({email: artistEmail});
+            console.log(user)
+    
+            const newArtist = {
+                artist_name: artistName,
+                artist_full_name: artistFullName,
+                artist_description: artistDescription,
+                artist_nation: artistNationality,
+                artist_image: artistImage,
+                artist_genre: artistGenre,
+                artist_dob: artistDob,
+            }
+            user.artist.push(newArtist);
+            await user.save();
+        }
+    
         const savedArtist = await newArtist.save();
         console.log(savedArtist);
 

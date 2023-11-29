@@ -7,6 +7,8 @@ import ThemeSwitcher from "../../components/switchTheme/page";
 import { RiEdit2Fill } from "react-icons/ri";
 import { CgClose } from "react-icons/cg";
 import { SlLogout } from "react-icons/sl";
+import Image from "next/image";
+import User from "@/models/userModel"
 
 interface Genre {
     _id: string;
@@ -18,15 +20,26 @@ interface Venue {
     venue_name: string;
 }
 
+interface Artist {
+    artist_name: string;
+    artist_dob: string;
+    artist_image: string;
+}
+
+interface User {
+    _id: string;
+    isArtist: boolean;
+  }
 
 
 export default function UserProfile({params}: any) {
     const router = useRouter();
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string>("");
-
+    const [isArtist, setIsArtist] = useState(false);
     const [genres, setGenres] = useState<any[]>([]);
     const [venues, setVenues] = useState<any[]>([]);
+    const [artist, setArtist] = useState<any[]>([]);
 
 
     const [data, setData] = useState({
@@ -61,8 +74,14 @@ export default function UserProfile({params}: any) {
             const res = await axios.get("/api/users/cookieUser");
             console.log(res.data);
             const userData = res.data.data;
+            const adminData: User = res.data.data;
+            if (adminData.isArtist) {
+                setIsArtist(true)
+            } 
             setGenres(res.data.data.genres);
             setVenues(res.data.data.venues);
+            setArtist(res.data.data.artist);
+            
             setData({
                 username: userData.username,
                 userId: userData._id,
@@ -169,7 +188,8 @@ export default function UserProfile({params}: any) {
             <h1 className="dark:text-white font-bold text-3xl">Profile / <span className="text-[#5311BF] dark:text-[#8e0bf5]">{data.username}</span></h1>
             
             <section className="flex gap-4 mt-10">
-                <div className="bg-purple-100 w-full gap-4 py-8 rounded-lg align-middle justify-start px-8 flex flex-col">                    
+                <div className="bg-purple-100 w-full gap-4 py-8 rounded-lg align-middle justify-start px-8 flex flex-col">     
+                <h2 className="text-black font-bold text-xl">User info</h2>               
                     <p className="text-lg dark:text-black">
                         Email: <span className="brand_purple">{data.userEmail}</span>
                     </p>
@@ -204,8 +224,37 @@ export default function UserProfile({params}: any) {
                 </div>
             </section>
 
+            {isArtist ? (
+         <section className="flex gap-4 mt-10">
+         <div className="bg-purple-100 w-full gap-4 py-8 rounded-lg align-middle justify-start px-8 flex flex-col">   
+         <h2 className="text-black font-bold text-xl">Artist info</h2>
+         <ul className="grid md:grid-cols-4 gap-8">
+                 {artist.map((artist: any) => (
+                     <article
+                         className="w-full text-lg grid gap-4"
+                         key={artist.artist_name}>
+                         <p className="flex">Artist name: <span className="ml-1 brand_purple">{artist.artist_name}</span></p>
+                         <p className="flex">Date of birth: <span className="ml-1 brand_purple">{artist.artist_dob}</span></p>
+                         <Image
+                         src={`https://concertify.s3.eu-central-1.amazonaws.com/${artist.artist_image}`}
+                         width={200}
+                         height={200}
+                         alt="artist image"
+                         className="h-auto w-full pt-4"
+                     />
+                     </article>
+                 ))}
+             </ul>
+         </div>
+         </section>
+      ) : (
+        <div className=""></div>
+      )}
+           
+
             {/* PREFERENCES */}
 
+            {!isArtist ? (
             <section className="flex gap-4 mt-10">
                 <div className="bg-purple-100 w-full gap-4 py-8 rounded-lg align-middle justify-start px-8 flex flex-col">                    
                     <div className="flex flex-col gap-4">
@@ -238,6 +287,9 @@ export default function UserProfile({params}: any) {
                     </div>
                 </div>
             </section>
+            ):(
+                <div className=""></div>
+            )}
 
             {/* LOG OUT BUTTON */}
             <button
@@ -247,7 +299,7 @@ export default function UserProfile({params}: any) {
                 <span className="text-[#5311BF] dark:text-white">Log out</span>
                 <SlLogout className="fill-[#5311BF] dark:fill-white"/>
             </button>
-                    
+{/*                     
             <ul className="grid md:grid-cols-4 gap-8">
                     {genres.map((genre: any) => (
                         <article
@@ -266,7 +318,7 @@ export default function UserProfile({params}: any) {
                             <p>{venue.venue_name}</p>
                         </article>
                     ))}
-                </ul>
+                </ul> */}
             
 
             {/* CHANGE USERNAME MODAL */}

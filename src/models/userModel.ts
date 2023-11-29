@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please provide a password"],
         unique: true,
     },
+    isArtist: {
+        type: Boolean,
+        default: false,
+    },
     isVerified: {
         type: Boolean,
         default: false,
@@ -44,6 +48,21 @@ const userSchema = new mongoose.Schema({
         {
             venue_name: String,
             venue_id: String,
+        },
+    ],
+    artist: [
+        {
+            artist_name: String,
+            artist_genre: [
+                {
+                genre_name: String,
+                genre_id: String,
+            },
+            ],
+            artist_image: String,
+            artist_nation: String,
+            artist_full_name: String,
+            artist_dob: String,
         },
     ],
     forgotPasswordToken: String,

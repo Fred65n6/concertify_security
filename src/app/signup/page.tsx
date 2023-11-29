@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 import { Progress } from "flowbite-react";
 import { CgClose } from "react-icons/cg";
 
@@ -94,6 +95,20 @@ export default function SignupPage() {
     if (signUpWindow) {
       signUpWindow.classList.add("hidden");
       signUpWindow.classList.remove("grid");
+    }
+  }
+
+  
+
+  const openSignup = () => {
+    const signUpWindow = document.getElementById("userSignup");
+    const userPick = document.getElementById("userPick");
+    if (signUpWindow) {
+      signUpWindow.classList.remove("hidden");
+      signUpWindow.classList.add("flex");
+      userPick?.classList.add("hidden")
+      userPick?.classList.remove("grid")
+
     }
   }
 
@@ -234,10 +249,31 @@ export default function SignupPage() {
 
   return (
     <>
-      <div id="signup_module" className="absolute top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
+      <div id="signup_module" className="fixed top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
         {/* SIGNUP FORM: STEP 1 */}
+
+
         <div id="signup_form">
-          <div className="p-10 mx-4 md:m-0 flex flex-col items-center w-fill md:w-[800px] bg-white rounded-lg dark:bg-[#12082a]">
+
+
+          <div id="userPick" className="p-10 mx-4 md:m-0 grid gap-6 items-center w-fill md:w-[800px] bg-white rounded-lg dark:bg-[#12082a]">
+          <button
+                  type="button"
+                  onClick={closeSignupModule}
+                  className="cursor-pointer ml-[100%]"
+                  >
+                  <CgClose/>
+              </button>
+            <h2 className="grid m-auto text-2xl font-bold">Sign up</h2>
+            <h3 className="text-center">To get your personalised Concertify experience <br />Tell us who you are:</h3>
+            <div className="flex m-auto gap-4 mt-8">
+            <button onClick={openSignup} className="bg-slate-100 brand_gradient text-white dark:text-white px-6 py-4 rounded-full ">a concert lover</button>
+            <button className="bg-slate-100 brand_gradient text-white dark:text-white px-6 py-4 rounded-full  "><Link href="/artist-signup">a verified artist/band</Link></button>
+            </div>
+          </div>
+
+
+          <div id="userSignup" className="p-10 mx-4 md:m-0 hidden flex-col items-center w-fill md:w-[800px] bg-white rounded-lg dark:bg-[#12082a]">
           <button
                   type="button"
                   onClick={closeSignupModule}
