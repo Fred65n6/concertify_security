@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SlHeart, SlEmotsmile, SlGrid } from "react-icons/sl";
+import { FiUploadCloud } from "react-icons/fi";
 import Search from "../search/page";
 import ThemeSwitcher from "../switchTheme/page";
 
@@ -29,6 +30,11 @@ return (
          <li>
             <Link className="flex gap-2 items-center" href="/favourites">
             <span className="text-[#5311BF] dark:text-white">Favourites</span>
+            </Link>
+         </li>
+         <li>
+            <Link className="flex gap-2 items-center" href="/upload-page">
+            <span className="text-[#5311BF] dark:text-white">Upload</span>
             </Link>
          </li>
       </ul>
@@ -76,6 +82,14 @@ return (
                />
             </Link>
          </li>
+         <li>
+            <Link className="flex gap-2 items-center" href="/upload-page">
+            <FiUploadCloud
+               className=" dark:fill-white w-5 h-5"
+               id="favourites"
+               />
+            </Link>
+         </li>
       </ul>
    </div>
    <div className="flex gap-2 items-center">
@@ -111,6 +125,15 @@ return (
             id="favourites"
             />
          <span className="text-[#5311BF] dark:text-white">Favourites</span>
+         </Link>
+      </li>
+      <li>
+         <Link className="flex flex-col items-center" href="/upload-page">
+         <FiUploadCloud 
+            className="text-[#5311BF] dark:text-white w-5 h-5"
+            id="favourites"
+            />
+         <span className="text-[#5311BF] dark:text-white">Upload</span>
          </Link>
       </li>
       <li>

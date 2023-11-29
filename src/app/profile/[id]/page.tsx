@@ -25,12 +25,9 @@ export default function UserProfile({params}: any) {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string>("");
 
-    const [genres, setGenres] = useState<Genre[]>([]);
-    const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-    const [selectedGenre, setSelectedGenre] = useState<string>("");
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [selectedVenues, setSelectedVenues] = useState<string[]>([]);
-    const [selectedVenue, setSelectedVenue] = useState<string>("");
+    const [genres, setGenres] = useState<any[]>([]);
+    const [venues, setVenues] = useState<any[]>([]);
+
 
     const [data, setData] = useState({
         username: "unknown",
@@ -64,22 +61,21 @@ export default function UserProfile({params}: any) {
             const res = await axios.get("/api/users/cookieUser");
             console.log(res.data);
             const userData = res.data.data;
+            setGenres(res.data.data.genres);
+            setVenues(res.data.data.venues);
             setData({
                 username: userData.username,
                 userId: userData._id,
                 userEmail: userData.email,
-                genres: userData.genres,
-                venues: userData.venues,
             });
         } catch (error: any) {
             console.error(error.message);
         }
     };
-    useEffect(() => {
-        getUserDetails();
-    }, []);
+
 
     useEffect(() => {
+        getUserDetails();
         setUser({...user, email: data.userEmail});
     }, [data.userEmail]);
 
@@ -251,6 +247,26 @@ export default function UserProfile({params}: any) {
                 <span className="text-[#5311BF] dark:text-white">Log out</span>
                 <SlLogout className="fill-[#5311BF] dark:fill-white"/>
             </button>
+                    
+            <ul className="grid md:grid-cols-4 gap-8">
+                    {genres.map((genre: any) => (
+                        <article
+                            className="w-auto"
+                            key={genre._id}>
+                            <p>{genre.genre_name}</p>
+                        </article>
+                    ))}
+                </ul>
+
+                <ul className="grid md:grid-cols-4 gap-8">
+                    {venues.map((venue: any) => (
+                        <article
+                            className="w-auto"
+                            key={venue._id}>
+                            <p>{venue.venue_name}</p>
+                        </article>
+                    ))}
+                </ul>
             
 
             {/* CHANGE USERNAME MODAL */}

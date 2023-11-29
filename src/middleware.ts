@@ -5,8 +5,8 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
-  const isAdminPath = path === '/admin-dashboard' || path === '/admin-artist' || path === '/admin-concerts' || path === '/admin-upload-artist' || path === '/admin-uploadconcert' || path === '/admin-upload-venue' || path === '/admin-venues';
-  const isRestrictedPath = path === '/favourites' || path === '/profile' || path === '/profile/${data}';
+  const isAdminPath = path === '/admin-dashboard' || path === '/admin-artist' || path === '/admin-concerts' ||  path === '/admin-venues';
+  const isRestrictedPath = path === '/favourites' || path === '/profile' || path === '/profile/${data}' || path === '/upload-artist' || path === '/uploadconcert' || path === '/upload-venue';
 
   const token = request.cookies.get('token')?.value || ''
   const adminToken = request.cookies.get('adminToken')?.value || ''
@@ -33,9 +33,9 @@ export const config = {
     '/admin-concerts',
     '/admin-venues',
     '/admin-artists',
-    '/admin-upload-artist',
-    '/admin-upload-venue',
-    '/admin-upload-concert',
+    '/upload-artist',
+    '/upload-venue',
+    '/upload-concert',
     '/profile/${data}'
   ]
 }

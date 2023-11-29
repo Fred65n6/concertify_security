@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SlHeart, SlEmotsmile, SlGrid, SlLock } from "react-icons/sl";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import Search from "../search/page";
 import ThemeSwitcher from "../switchTheme/page";
 

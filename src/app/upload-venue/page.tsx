@@ -1,7 +1,7 @@
 "use client";
 import React, {useState} from "react";
 import { SlArrowLeft } from "react-icons/sl";
-import Link from "../../../node_modules/next/link";
+import Link from "next/link";
 
 
 const UploadForm: React.FC = () => {

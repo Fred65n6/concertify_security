@@ -122,7 +122,7 @@ const closeEditModule = () => {
               <span>There are <span className="text-[#5311BF] dark:text-[#8e0bf5] font-bold">{totalArtists}</span> artists in total</span>
             </div>
             <button className="flex gap-2 rounded-full bg-purple-100 brand_purple items-center px-8 py-2 hover:bg-purple-200">
-              <Link href="/admin-upload-artist">Upload new artist</Link>
+              <Link href="/upload-artist">Upload new artist</Link>
               <SlPlus/>
           </button>
         </section>

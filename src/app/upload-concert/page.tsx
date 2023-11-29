@@ -1,7 +1,7 @@
 "use client";
 import React, {useState, useEffect} from "react";
 import { SlArrowLeft } from "react-icons/sl";
-import Link from "../../../node_modules/next/link";
+import Link from "next/link";
 
 interface Artist {
     _id: string;
@@ -140,16 +140,7 @@ const UploadForm: React.FC = () => {
 
     return (
         <div className="flex flex-col w-full md:w-4/6 gap-6 mb-24">
-            <Link
-                className="flex align-middle gap-2"
-                href="/admin-concerts"
-            >
-            <SlArrowLeft
-                className="stroke-gray-600 dark:stroke-[#5311BF] w-4 h-4 pt-1"
-                id="arrow_right"
-                />
-                Back to concerts overview
-            </Link>
+    
             <h1 className="font-bold text-4xl pb-4">Upload a concert</h1>
             <form
                 id="uploadConcertForm"

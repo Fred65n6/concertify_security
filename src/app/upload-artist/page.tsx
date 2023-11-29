@@ -1,7 +1,7 @@
 "use client";
 import React, {useState, useEffect} from "react";
 import {request} from "http";
-import Link from "../../../node_modules/next/link";
+import Link from "next/link";
 import { SlArrowLeft } from "react-icons/sl";
 
 interface Genre {
@@ -84,22 +84,12 @@ const UploadForm: React.FC = () => {
 
     return (
         <div className="flex flex-col w-full md:w-4/6 gap-6 mb-24">
-            <Link
-                className="flex align-middle gap-2"
-                href="/admin-artists"
-            >
-            <SlArrowLeft
-                className="stroke-gray-600 dark:stroke-[#5311BF] w-4 h-4 pt-1"
-                id="arrow_right"
-                />
-                Back to artists overview
-            </Link>
             <h1 className="font-bold text-4xl pb-4">Upload an artist</h1>
             <form
                 id="uploadArtistForm"
                 className="flex flex-col gap-8 w-full"
                 onSubmit={onSubmit}
-            >
+                >
                 <div className="form-group flex flex-col gap-2 text-gray-600 dark:text-gray-400">
                     <label htmlFor="artist_name">Artist name</label>
                     <input
