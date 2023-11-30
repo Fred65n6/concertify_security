@@ -112,6 +112,12 @@ export default function UserProfile({params}: any) {
         UsernameModal?.classList.add("grid");
     };
 
+    const openChangeArtistNameModal = () => {
+        const modal = document.getElementById("changeArtistNameModal");
+        modal?.classList.remove("hidden");
+        modal?.classList.add("grid");
+    };
+
     
     const closeUsernameModule = () => {
         const changeUsernameModule = document.getElementById("changeUsernameModal");
@@ -124,6 +130,14 @@ export default function UserProfile({params}: any) {
         modal?.classList.add("hidden");
         modal?.classList.remove("grid");
       };
+
+      const closeArtistNameModule = () => {
+        const modal = document.getElementById("changeArtistNameModal");
+        modal?.classList.add("hidden");
+        modal?.classList.remove("grid");
+      };
+
+      
 
 
     // -- CHANGE USERNAME
@@ -150,6 +164,35 @@ export default function UserProfile({params}: any) {
         } finally {
             setLoading(false);
             closeUsernameModule();
+            window.location.reload();
+
+        }
+    };
+
+    // -- CHANGE USERNAME
+    const changeArtistName = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post(
+                "/api/users/changeUsername",
+                user
+            );
+            console.log("username changed", response.data);
+            // showUsernameChangeMessage();
+        } catch (error: any) {
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.error
+            ) {
+                setError(error.response.data.error);
+            } else {
+                setError("An error occurred during signup.");
+            }
+            console.log("API signup failed", error);
+        } finally {
+            setLoading(false);
+            closeArtistNameModule();
             window.location.reload();
 
         }
@@ -225,22 +268,35 @@ export default function UserProfile({params}: any) {
             </section>
 
             {isArtist ? (
-         <section className="flex gap-4 mt-10">
+         <section className="flex gap-4 mt-10 first-letter:">
          <div className="bg-purple-100 w-full gap-4 py-8 rounded-lg align-middle justify-start px-8 flex flex-col">   
          <h2 className="text-black font-bold text-xl">Artist info</h2>
-         <ul className="grid md:grid-cols-4 gap-8">
+         <ul className="flex flex-col w-full md:grid-cols-4 gap-8">
                  {artist.map((artist: any) => (
                      <article
                          className="w-full text-lg grid gap-4"
                          key={artist.artist_name}>
-                         <p className="flex">Artist name: <span className="ml-1 brand_purple">{artist.artist_name}</span></p>
-                         <p className="flex">Date of birth: <span className="ml-1 brand_purple">{artist.artist_dob}</span></p>
+
+                        <div className="flex item-center justify-between">
+                            <p className="flex">Artist name: <span className="ml-1 brand_purple">{artist.artist_name}</span></p>
+                            <button onClick={openChangeArtistNameModal}>
+                                <RiEdit2Fill className="dark:fill-black"/>
+                            </button>
+                        </div>
+
+                        <div className="flex item-center justify-between">
+                            <p className="flex">Date of birth: <span className="ml-1 brand_purple">{artist.artist_dob}</span></p>
+                            <button onClick={openChangeArtistNameModal}>
+                                <RiEdit2Fill className="dark:fill-black"/>
+                            </button>
+                        </div>
+
                          <Image
                          src={`https://concertify.s3.eu-central-1.amazonaws.com/${artist.artist_image}`}
                          width={200}
                          height={200}
                          alt="artist image"
-                         className="h-auto w-full pt-4"
+                         className="h-auto w-72 pt-4"
                      />
                      </article>
                  ))}
@@ -319,10 +375,57 @@ export default function UserProfile({params}: any) {
                         </article>
                     ))}
                 </ul> */}
+
+            {/* CHANGE ARTIST NAME MODAL */}
+            <div id="changeArtistNameModal" className="fixed top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
+                <div className="p-10 mx-4 md:m-0 flex flex-col items-center w-fill md:w-[800px] bg-white rounded-lg dark:bg-[#202124]">
+                    <button
+                        type="button"
+                        onClick={closeArtistNameModule}
+                        className="cursor-pointer ml-[100%]"
+                    >
+                        <CgClose/>
+                    </button>
+
+                    <div className="flex flex-col w-full gap-2">
+                        <span className="w-full text-xl font-semibold text-[#5311BF] dark:text-[#8e0bf5] mb-6">Change username</span>
+                        <input
+                            readOnly={true}
+                            className="m-2 p-2 rounded-md text-left text-black bg-slate-200 hidden"
+                            type="text"
+                            id="email"
+                            value={user.email}
+                            onChange={(e) => setUser({...user, email: e.target.value})}
+                            placeholder=""
+                        />
+                        <label htmlFor="password" className="w-fit text-sm text-gray-600">Choose a new username</label>
+                        <input
+                            className="bg-slate-100 border-0 px-8 py-4 rounded-full w-full"
+                            type="text"
+                            id="newUsername"
+                            placeholder="Start typing..."
+                            value={user.newUsername}
+                            onChange={(e) =>
+                                setUser({...user, newUsername: e.target.value})
+                            }
+                        
+                        />
+                        {error && <div className="text-red-500">{error}</div>}
+
+                    </div>
+
+                    <button
+                        onClick={changeArtistName}
+                        className="m-4 brand_gradient px-12 py-4 rounded-full text-white mt-8"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
             
 
             {/* CHANGE USERNAME MODAL */}
-            <div id="changeUsernameModal" className="absolute top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
+            <div id="changeUsernameModal" className="fixed top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
                 <div className="p-10 mx-4 md:m-0 flex flex-col items-center w-fill md:w-[800px] bg-white rounded-lg dark:bg-[#202124]">
                     <button
                         type="button"
@@ -369,7 +472,7 @@ export default function UserProfile({params}: any) {
             </div>
 
             {/* CHANGE PASSWORD MODAL */}
-            <div id="changePasswordModal" className="absolute top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
+            <div id="changePasswordModal" className="fixed top-0 left-0 bg-slate-900/50 w-full h-screen items-center justify-center hidden backdrop-blur-sm z-50">
                 <div className="p-10 mx-4 md:m-0 flex flex-col items-center md:w-[800px] bg-white rounded-lg dark:bg-[#202124]">
                     <button
                         type="button"
